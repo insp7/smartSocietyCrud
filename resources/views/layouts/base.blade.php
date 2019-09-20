@@ -29,8 +29,10 @@
         <link rel="stylesheet" href="{{ URL::asset('assets/vendor/animate.css/animate.min.css') }}">
         <!-- Argon CSS -->
         <link rel="stylesheet" href="{{  URL::asset('assets/css/argon.min9f1e.css?v=1.1.0') }}" type="text/css">
+
         <!-- Custom CSS -->
         @yield('custom-styles')
+
     </head>
 
     <body>
