@@ -95,4 +95,8 @@ class InsiderService {
         $insiders = Insider::all();
         return $insiders->count();
     }
+
+    public function getTotalInsiderImagesCount() {
+        return InsiderImage::all()->count();
+    }
 }

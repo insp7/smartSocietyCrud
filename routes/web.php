@@ -20,10 +20,6 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     /*GENERAL ROUTES*/
 
-    Route::get('/temp', function() {
-       return view('dashboard.admin');
-    });
-
     Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
     Route::redirect('/', '/home');

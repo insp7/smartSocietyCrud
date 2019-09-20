@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\CriminalService;
 use App\Services\InsiderService;
 use App\Services\NewsFeedService;
+use App\User;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
@@ -23,14 +24,23 @@ class DashboardController extends Controller
 
         if($user->hasRole('Admin')){
 
-            $insiders_count = $this->insiderService->getInsidersCount();
-            $criminals_count = $this->criminalService->getCriminalsCount();
-            $news_feed_count = $this->insiderService->getNewsFeedCount();
+            $insider_count = $this->insiderService->getInsidersCount();
+            $criminal_count = $this->criminalService->getCriminalsCount();
+            $news_feed_count = $this->newsFeedService->getNewsFeedCount();
+            $criminal_images_count = $this->criminalService->getTotalCriminalImagesCount();
+            $insider_images_count = $this->insiderService->getTotalInsiderImagesCount();
+            $user_count = User::all()->count();
+
+
 
             return view('dashboard.admin')->with([
-                'insiders_count' => $insiders_count,
-                'criminals_count' => $criminals_count,
+                'insider_count' => $insider_count,
+                'criminal_count' => $criminal_count,
                 'news_feed_count' => $news_feed_count,
+                'user_count' => $user_count,
+                'criminal_images_count' => $criminal_images_count,
+                'insider_images_count' => $insider_images_count
+
             ]);
         }
 //        elseif ($user->hasRole('Staff')) {

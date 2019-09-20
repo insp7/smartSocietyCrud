@@ -92,4 +92,9 @@ class NewsFeedService {
     public function getImagesPath($news_feed_id) {
         return NewsFeedImage::where('news_feed_id', $news_feed_id)->get();
     }
+
+    public function getNewsFeedCount() {
+        $newsFeed = NewsFeed::all();
+        return $newsFeed->count();
+    }
 }

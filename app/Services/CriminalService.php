@@ -82,4 +82,13 @@ class CriminalService {
     public function getImagesPath($criminal_id) {
         return CriminalImage::where('criminal_id', $criminal_id)->get();
     }
+
+    public function getCriminalsCount() {
+        $criminals = Criminal::all();
+        return $criminals->count();
+    }
+
+    public function getTotalCriminalImagesCount() {
+        return CriminalImage::all()->count();
+    }
 }
