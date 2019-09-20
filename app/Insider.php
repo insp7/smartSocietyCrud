@@ -15,6 +15,10 @@ class Insider extends Model {
         return $this->belongsTo('App\User');
     }
 
+    public function insiderImages() {
+        return $this->hasMany('App\InsiderImage');
+    }
+
     // declaring event handlers
     public static function boot() {
         parent::boot();

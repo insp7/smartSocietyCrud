@@ -16,7 +16,6 @@ class CreateCriminalsTable extends Migration
         Schema::create('criminals', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
-            $table->text('image')->nullable();
             $table->text('crime_type')->nullable();
             $table->unsignedBigInteger('created_by');
 

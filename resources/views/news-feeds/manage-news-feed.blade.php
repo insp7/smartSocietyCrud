@@ -35,7 +35,7 @@
                             <th> Title </th>
                             <th> Description </th>
                             <th> Posted On </th>
-                            <th> View News Images </th>
+                            <th> View Images </th>
                             <th> Edit </th>
                             <th> Delete </th>
                         </tr>
@@ -45,7 +45,7 @@
                             <th> Year </th>
                             <th> Description </th>
                             <th> Posted On </th>
-                            <th> View News Images </th>
+                            <th> View Images </th>
                             <th> Edit </th>
                             <th> Delete </th>
                         </tr>

@@ -14,5 +14,8 @@ interface FileConstants {
 
     // News Feed Uploads Path
     const NEWS_FEED_ATTACHMENTS_PATH = FileConstants::ATTACHMENTS_PATH . "news-feed/";
+
+    // Criminal Uploads Path
+    const DATASET_ATTACHMENTS_PATH = FileConstants::ATTACHMENTS_PATH . "core/data-set/";
 }
 

@@ -16,7 +16,7 @@
                 </div>
                 <!-- Card body -->
                 <div class="card-body">
-                    <form method="post" action="/admin/insiders">
+                    <form method="post" enctype="multipart/form-data" action="/admin/insiders">
                         @csrf
 
                         <div class="row">
@@ -103,17 +103,15 @@
                             </div>
                         </div>
 
-
-
-
-
-
-
-
-
-
-
-
+                        <div class="form-group">
+                            <label class="text-sm" for="insider_images">Insider Images</label>
+                            <div class="input-group">
+                                <input type="file" id="insider_images" name="insider_images[]"  placeholder="Insider Images" multiple="multiple" class="form-control @error('insider_images') is-invalid @enderror"></input>
+                            </div>
+                            @error('insider_images')
+                            <div class="invalid-feedback" style="display: block">{{ $message }}</div>
+                            @enderror
+                        </div>
 
                         <button class="btn btn-primary" type="submit">Add</button>
                     </form>

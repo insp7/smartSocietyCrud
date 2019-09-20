@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\FileConstants;
 use App\Criminal;
 use App\Services\CriminalService;
 use http\Exception;
@@ -42,16 +43,40 @@ class CriminalController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-
         $validatedData = $request->validate([
             'name' => 'required|max:100',
             'age' => 'required|numeric',
             'gender' => 'required|in:M,F,O',
-            'crime_type' => 'required'
+            'crime_type' => 'required',
+            'criminal_images' => 'sometimes|required',
+            'criminal_images.*' =>'sometimes|mimes:jpeg,png,bmp,tiff'
         ]);
 
+        $image_relative_paths = [];
+        $user_id = Auth::id();
+
+        if($request->hasfile('criminal_images')) {
+            $i = 0;
+
+            foreach($request->file('criminal_images') as $criminal_image) {
+
+                // The file name of the attachment
+                $fileName = $user_id . '_' . $i++ . '_' . time() . '.' . $criminal_image->getClientOriginalExtension();
+
+                // exact path on the current machine
+                $destinationPath = public_path(FileConstants::DATASET_ATTACHMENTS_PATH);
+                $destinationPath .= $user_id . '/';
+
+                // Moving the image
+                $criminal_image->move($destinationPath, $fileName);
+
+                // The relative path to the image
+                $image_relative_paths[] = FileConstants::DATASET_ATTACHMENTS_PATH . $user_id . '/' . $fileName;
+            }
+        }
+
         try {
-            $this->criminalService->store($validatedData, Auth::id());
+            $this->criminalService->store($validatedData, $image_relative_paths, Auth::id());
             return redirect('/admin/criminals')->with([
                 'type' => 'success',
                 'title' => 'Criminal added successfully',
@@ -147,6 +172,16 @@ class CriminalController extends Controller {
         }
     }
 
+    public function getImagesForCriminals(Request $request) {
+        $criminal_id = $request->id;
+        $criminal_images_path = $this->criminalService->getImagesPath($criminal_id);
+        $hostName = $request->getHttpHost();
+
+        return view('criminals.criminal-images')
+            ->with('criminal_images_path', $criminal_images_path)
+            ->with('hostName', $hostName);
+    }
+
     public function getCriminals() {
         $criminals = $this->criminalService->getDatatable();
 
@@ -163,13 +198,16 @@ class CriminalController extends Controller {
             ->addColumn('building_no', function (\stdClass $user) {
                 return $user->gender;
             })
+            ->addColumn('view_criminal_images', function(\stdClass $criminal) {
+                return '<button id="' . $criminal->id . '" class="view-criminal-images fa fa-street-view btn-sm btn-info"></button>';
+            })
             ->addColumn('edit', function(\stdClass $criminal) {
                 return '<button id="' . $criminal->id . '" class="edit fa fa-pencil-alt btn-sm btn-warning"></button>';
             })
             ->addColumn('delete', function(\stdClass $criminal) {
                 return '<button id="' . $criminal->id . '" class="delete fa fa-trash btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal"></button>';
             })
-            ->rawColumns(['edit', 'delete'])
+            ->rawColumns(['view_criminal_images', 'edit', 'delete'])
             ->make(true);
     }
 }

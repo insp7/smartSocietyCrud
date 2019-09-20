@@ -4,6 +4,7 @@
 namespace App\Services;
 
 use App\Insider;
+use App\InsiderImage;
 use App\User;
 use http\Exception;
 use Illuminate\Support\Facades\DB;
@@ -15,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
  */
 class InsiderService {
 
-    public function store($validatedData, $user_id) {
+    public function store($validatedData, $image_relative_paths, $user_id) {
         DB::beginTransaction();
             $user = User::create([
                 'name' => $validatedData['name'],
@@ -28,12 +29,21 @@ class InsiderService {
 
             $user->assignRole('Insider');
 
-            Insider::create([
+            $insider = Insider::create([
                 'block_no' => $validatedData['block_no'],
                 'building_no' => $validatedData['building_no'],
                 'user_id' => $user->id,
                 'created_by' => $user_id
             ]);
+
+        foreach ($image_relative_paths as $image_relative_path) {
+            error_log($image_relative_path);
+            InsiderImage::create([
+                'insider_id' => $insider->id,
+                'image_path' => $image_relative_path,
+                'created_by' => $user_id
+            ]);
+        }
         DB::commit();
     }
 
@@ -75,5 +85,14 @@ class InsiderService {
 
     public function getInsiderById(int $id) {
         return Insider::findOrFail($id);
+    }
+
+    public function getImagesPath($insider_id) {
+        return InsiderImage::where('insider_id', $insider_id)->get();
+    }
+
+    public function getInsidersCount() {
+        $insiders = Insider::all();
+        return $insiders->count();
     }
 }

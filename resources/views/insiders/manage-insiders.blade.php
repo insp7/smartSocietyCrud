@@ -38,6 +38,7 @@
                             <th> Gender </th>
                             <th> Block No. </th>
                             <th> Building No. </th>
+                            <th> View Images </th>
                             <th> Edit </th>
                             <th> Delete </th>
                         </tr>
@@ -50,6 +51,7 @@
                             <th> Gender </th>
                             <th> Block No. </th>
                             <th> Building No. </th>
+                            <th> View Images </th>
                             <th> Edit </th>
                             <th> Delete </th>
                         </tr>
@@ -120,12 +122,18 @@
                 {data: 'gender', name: 'gender'},
                 {data: 'block_no', name: 'block_no'},
                 {data: 'building_no', name: 'building_no'},
+                {data: 'view_insider_images', name: 'view_insider_images'},
                 {data: 'edit', name: 'edit'},
                 {data: 'delete', name: 'delete'}
             ]
         });
 
-        manageInsidersTable.on('click', '.delete', function(e) {
+        manageInsidersTable.on('click', '.view-insider-images', function () {
+            $id = $(this).attr('id');
+            window.location.pathname = '/admin/insiders/images/' + $id + '/show';
+        });
+
+        manageInsidersTable.on('click', '.delete', function() {
             $id = $(this).attr('id');
             $('#delete_form').attr('action', '/admin/insiders/' + $id);
         });

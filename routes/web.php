@@ -20,16 +20,25 @@ Auth::routes();
 Route::middleware(['auth'])->group(function () {
     /*GENERAL ROUTES*/
 
+    Route::get('/temp', function() {
+       return view('dashboard.admin');
+    });
+
     Route::get('/logout', '\App\Http\Controllers\Auth\LoginController@logout');
 
     Route::redirect('/', '/home');
     Route::get('/home', 'HomeController@index');
 
+    Route::redirect('/', '/dashboard');
+    Route::get('/dashboard', 'DashboardController@index');
+
     // Insiders
+    Route::get('/admin/insiders/images/{id}/show', 'InsiderController@getImagesForInsiders');
     Route::get('/admin/insiders/get-insiders', 'InsiderController@getInsiders');
     Route::resource('/admin/insiders', 'InsiderController');
 
     // Criminals
+    Route::get('/admin/criminals/images/{id}/show', 'CriminalController@getImagesForCriminals');
     Route::get('/admin/criminals/get-criminals', 'CriminalController@getCriminals');
     Route::resource('/admin/criminals', 'CriminalController');
 

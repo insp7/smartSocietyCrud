@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Insider;
+use App\Constants\FileConstants;
 use http\Exception; // ext-http is missing in composer.json; include later if required.
 use Illuminate\Http\Request;
 use App\Services\InsiderService;
@@ -43,18 +43,43 @@ class InsiderController extends Controller {
      */
     public function store(Request $request) {
 
-        $validatedData = $request->validate([
-            'name' => 'required|max:100',
-            'email' => 'required|email',
-            'password' => 'required', // TODO: Later add custom validations for password as required.
-            'building_no' => 'required|numeric',
-            'block_no' => 'required|numeric',
-            'age' => 'required|numeric',
-            'gender' => 'required'
-        ]);
+            $validatedData = $request->validate([
+                'name' => 'required|max:100',
+                'email' => 'required|email',
+                'password' => 'required', // TODO: Later add custom validations for password as required.
+                'building_no' => 'required|numeric',
+                'block_no' => 'required|numeric',
+                'age' => 'required|numeric',
+                'gender' => 'required',
+                'insider_images' => 'sometimes|required',
+                'insider_images.*' =>'sometimes|mimes:jpeg,png,bmp,tiff'
+            ]);
+
+        $image_relative_paths = [];
+        $user_id = Auth::id();
+
+        if($request->hasfile('insider_images')) {
+            $i = 0;
+
+            foreach($request->file('insider_images') as $insider_image) {
+
+                // The file name of the attachment
+                $fileName = $user_id . '_' . $i++ . '_' . time() . '.' . $insider_image->getClientOriginalExtension();
+
+                // exact path on the current machine
+                $destinationPath = public_path(FileConstants::DATASET_ATTACHMENTS_PATH);
+                $destinationPath .= $user_id . '/';
+
+                // Moving the image
+                $insider_image->move($destinationPath, $fileName);
+
+                // The relative path to the image
+                $image_relative_paths[] = FileConstants::DATASET_ATTACHMENTS_PATH . $user_id . '/' . $fileName;
+            }
+        }
 
         try {
-            $this->insiderService->store($validatedData, Auth::id());
+            $this->insiderService->store($validatedData, $image_relative_paths, Auth::id());
             return redirect('/admin/insiders')->with([
                 'type' => 'success',
                 'title' => 'Insider added successfully',
@@ -151,6 +176,16 @@ class InsiderController extends Controller {
         }
     }
 
+    public function getImagesForInsiders(Request $request) {
+        $insider_id = $request->id;
+        $insider_images_path = $this->insiderService->getImagesPath($insider_id);
+        $hostName = $request->getHttpHost();
+
+        return view('insiders.insider-images')
+            ->with('insider_images_path', $insider_images_path)
+            ->with('hostName', $hostName);
+    }
+
     public function getInsiders() {
         $insiders = $this->insiderService->getDatatable();
 
@@ -173,13 +208,16 @@ class InsiderController extends Controller {
             ->addColumn('building_no', function (\stdClass $insider) {
                 return $insider->building_no;
             })
+            ->addColumn('view_insider_images', function(\stdClass $insider) {
+                return '<button id="' . $insider->id . '" class="view-insider-images fa fa-street-view btn-sm btn-info"></button>';
+            })
             ->addColumn('edit', function(\stdClass $insider) {
                 return '<button id="' . $insider->id . '" class="edit fa fa-pencil-alt btn-sm btn-warning"></button>';
             })
             ->addColumn('delete', function(\stdClass $insider) {
                 return '<button id="' . $insider->id . '" class="delete fa fa-trash btn-sm btn-danger" data-toggle="modal" data-target="#deleteModal"></button>';
             })
-            ->rawColumns(['edit', 'delete'])
+            ->rawColumns(['view_insider_images', 'edit', 'delete'])
             ->make(true);
     }
 }

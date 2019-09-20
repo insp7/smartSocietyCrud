@@ -1,32 +1,14 @@
 @extends('layouts.base')
 
 @section('page-content')
-    <div class="row">
-        <div class="col-xl-6">
-            <div class="card">
-                <div class="card-header bg-transparent">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="text-uppercase text-muted ls-1 mb-1">Staff</h6>
-                            <h5 class="h3 mb-0">Insider Count</h5>
-                        </div>
-                        <div class="col">
-                            <h6 class="text-uppercase text-muted ls-1 mb-1">Staff</h6>
-                            <h5 class="h3 mb-0">Insider Count</h5>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-
-                </div>
-            </div>
-        </div>
-    </div>
+    @foreach($insider_images_path as $insider_image)
+        <div class="m-9"><img src="{{ asset($insider_image->image_path) }}" class="card-img" alt="ERR, IMG NOT FOUND!"></div>
+    @endforeach
 @endsection
 
-@section('custom-script')
+@section ('custom-script')
+    <script src="{{ asset("/js/shape/add-shape.js") }}"></script>
 
-    <!-- Optional JS -->
     @if(session()->has('type'))
         <script>
             $.notify({
@@ -54,3 +36,5 @@
         </script>
     @endif
 @endsection
+
+

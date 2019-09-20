@@ -15,6 +15,10 @@ class Criminal extends Model {
         return $this->belongsTo('App\User');
     }
 
+    public function criminalImages() {
+        return $this->hasMany('App\CriminalImage');
+    }
+
     // declaring event handlers
     public static function boot() {
         parent::boot();

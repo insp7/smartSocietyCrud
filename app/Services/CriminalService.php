@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Criminal;
+use App\CriminalImage;
 use App\User;
 use http\Exception;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +14,7 @@ use Illuminate\Support\Facades\DB;
  */
 class CriminalService {
 
-    public function store($validatedData, $user_id) {
+    public function store($validatedData, $image_relative_paths, $user_id) {
         DB::beginTransaction();
             $user = User::create([
                 'name' => $validatedData['name'],
@@ -24,11 +25,20 @@ class CriminalService {
 
             $user->assignRole('Criminal');
 
-            Criminal::create([
+            $criminal = Criminal::create([
                 'user_id' => $user->id,
                 'crime_type' => $validatedData['crime_type'],
                 'created_by' => $user_id
             ]);
+
+            foreach ($image_relative_paths as $image_relative_path) {
+                error_log($image_relative_path);
+                CriminalImage::create([
+                    'criminal_id' => $criminal->id,
+                    'image_path' => $image_relative_path,
+                    'created_by' => $user_id
+                ]);
+            }
         DB::commit();
     }
 
@@ -67,5 +77,9 @@ class CriminalService {
 
     public function getCriminalById(int $id) {
         return Criminal::findOrFail($id);
+    }
+
+    public function getImagesPath($criminal_id) {
+        return CriminalImage::where('criminal_id', $criminal_id)->get();
     }
 }

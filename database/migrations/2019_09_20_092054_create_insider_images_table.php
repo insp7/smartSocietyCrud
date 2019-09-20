@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateNewsFeedImagesTable extends Migration
+class CreateInsiderImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,16 @@ class CreateNewsFeedImagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('news_feed_images', function (Blueprint $table) {
+        Schema::create('insider_images', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('news_feed_id');
-            $table->foreign('news_feed_id')
+            $table->unsignedBigInteger('insider_id');
+            $table->foreign('insider_id')
                 ->references('id')
-                ->on('news_feeds')
+                ->on('insiders')
                 ->onDelete('cascade');
             $table->string('image_path');
-
             $table->integer('created_by')->nullable();
+
             $table->timestamps();
         });
     }
@@ -34,6 +34,6 @@ class CreateNewsFeedImagesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('news_feed_images');
+        Schema::dropIfExists('insider_images');
     }
 }

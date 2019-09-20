@@ -16,7 +16,7 @@
                 </div>
                 <!-- Card body -->
                 <div class="card-body">
-                    <form method="post" action="/admin/criminals">
+                    <form method="post" enctype="multipart/form-data" action="/admin/criminals">
                         @csrf
                         <div class="form-group">
                             <div class="input-group">
@@ -59,11 +59,11 @@
 
                         {{-- TODO: Storing of image has to be done yet --}}
                         <div class="form-group">
-                            <label class="text-sm" for="news_feed_images">News Images</label>
+                            <label class="text-sm" for="criminal_images">Criminal Images</label>
                             <div class="input-group">
-                                <input type="file" id="news_feed_images" name="news_feed_images[]"  placeholder="News Feed Images" multiple="multiple" class="form-control @error('news_feed_images') is-invalid @enderror"></input>
+                                <input type="file" id="criminal_images" name="criminal_images[]"  placeholder="Criminal Images" multiple="multiple" class="form-control @error('criminal_images') is-invalid @enderror"></input>
                             </div>
-                            @error('news_feed_images')
+                            @error('criminal_images')
                             <div class="invalid-feedback" style="display: block">{{ $message }}</div>
                             @enderror
                         </div>

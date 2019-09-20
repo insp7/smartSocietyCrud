@@ -36,6 +36,7 @@
                                 <th> Crime Type </th>
                                 <th> Age </th>
                                 <th> Gender </th>
+                                <th> View Images </th>
                                 <th> Edit </th>
                                 <th> Delete </th>
                             </tr>
@@ -46,6 +47,7 @@
                                 <th> Crime Type </th>
                                 <th> Age </th>
                                 <th> Gender </th>
+                                <th> View Images </th>
                                 <th> Edit </th>
                                 <th> Delete </th>
                             </tr>
@@ -114,9 +116,15 @@
                 {data: 'crime_type', name: 'crime_type'},
                 {data: 'age', name: 'age'},
                 {data: 'gender', name: 'gender'},
+                {data: 'view_criminal_images', name: 'view_criminal_images'},
                 {data: 'edit', name: 'edit'},
                 {data: 'delete', name: 'delete'}
             ]
+        });
+
+        manageCriminalsTable.on('click', '.view-criminal-images', function () {
+            $id = $(this).attr('id');
+            window.location.pathname = '/admin/criminals/images/' + $id + '/show';
         });
 
         manageCriminalsTable.on('click', '.delete', function(e) {
