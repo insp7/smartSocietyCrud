@@ -13,8 +13,7 @@ class NewsFeedController extends Controller {
 
     protected $newsFeedService;
 
-    public function __construct(NewsFeedService $newsFeedService)
-    {
+    public function __construct(NewsFeedService $newsFeedService) {
         $this->newsFeedService = $newsFeedService;
     }
 

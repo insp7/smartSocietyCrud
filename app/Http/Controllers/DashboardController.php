@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\CriminalService;
 use App\Services\InsiderService;
-use Illuminate\Http\Request;
+use App\Services\NewsFeedService;
 use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
 
-    protected $insiderService;
+    protected $insiderService, $criminalService, $newsFeedService;
 
-    public function __construct(InsiderService $insiderService) {
+    public function __construct(InsiderService $insiderService, CriminalService $criminalService, NewsFeedService $newsFeedService) {
         $this->insiderService = $insiderService;
+        $this->criminalService = $criminalService;
+        $this->newsFeedService = $newsFeedService;
     }
 
     public function index() {
@@ -20,29 +23,30 @@ class DashboardController extends Controller
 
         if($user->hasRole('Admin')){
 
-            $staff_count=$this->staffService->getStaffGroupByDateOfJoiningInstitute();
+            $insiders_count = $this->insiderService->getInsidersCount();
+            $criminals_count = $this->criminalService->getCriminalsCount();
+            $news_feed_count = $this->insiderService->getNewsFeedCount();
 
-            $years = array_keys($staff_count);
-            error_log(json_encode($years));
-            $counts = array_values($staff_count);
             return view('dashboard.admin')->with([
-                'years' => $years,
-                'counts' => $counts,
+                'insiders_count' => $insiders_count,
+                'criminals_count' => $criminals_count,
+                'news_feed_count' => $news_feed_count,
             ]);
-
-        }elseif ($user->hasRole('Staff')){
-            return view('dashboard.staff')->with(
-                [
-                    'user'=>$user,
-                ]
-            );
-        }elseif ($user->hasRole('Student')){
-            return view('dashboard.student')->with(
-                [
-                    'user' => $user,
-                ]
-            );
-        }else{
+        }
+//        elseif ($user->hasRole('Staff')) {
+//            return view('dashboard.staff')->with(
+//                [
+//                    'user'=>$user,
+//                ]
+//            );
+//        }elseif ($user->hasRole('Student')){
+//            return view('dashboard.student')->with(
+//                [
+//                    'user' => $user,
+//                ]
+//            );
+//        }
+        else{
             abort(404);
         }
     }
